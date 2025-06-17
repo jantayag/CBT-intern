@@ -82,7 +82,7 @@ $questions = getAssessmentQuestions($assessment_id);
                 </div>
             
             <!-- multiple-choice -->
-            <?php elseif ($question_type === 'multiple-choice'): ?>
+            <?php elseif ($question_type === 'mc'): ?>
                 <div class="mc">
                     <div class="question-header">
                         <h3><?php echo ($index + 1) . ". " . htmlspecialchars($question['question_text']); ?> <span style="color: red;">*</span></h3>
