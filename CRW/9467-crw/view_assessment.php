@@ -45,7 +45,7 @@ include('php/student-queries/get_question_points.php');
             $question_points = getQuestionPoints($question_id, $assessment_id);
             $correct_answer = '';
             
-            if ($question_type === 'multiple-choice') {
+            if ($question_type === 'mc') {
                 foreach ($choices as $choice) {
                     if ($choice['is_answer'] === 'Y') {
                         $correct_answer = $choice['text'];
@@ -88,7 +88,7 @@ include('php/student-queries/get_question_points.php');
                         <div class="correct-choice">Correct answer: <?php echo htmlspecialchars($correct_answer); ?></div>
                     <?php endif; ?>
                 
-                <?php elseif ($question_type === 'multiple-choice'): ?>
+                <?php elseif ($question_type === 'mc'): ?>
                     <?php foreach ($choices as $choice): ?>
                         <label class="disabled <?php 
                             if ($choice['is_answer'] === 'Y') {

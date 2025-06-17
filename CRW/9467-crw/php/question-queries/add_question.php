@@ -121,10 +121,11 @@ function addSingleQuestion($conn, $data) {
                 break;
 
             case 'identification':
-                if (isset($data['answer'])) {
+                if (isset($data['identificationAnswer'])) {
+                    error_log("Answer is: " . $data['identificationAnswer']);
                     $choiceStmt = $conn->prepare("INSERT INTO `choices` (`id`, `text`, `question_id`, `is_answer`) VALUES (?, ?, ?, ?)");
                     $isAnswer = 'Y';
-                    $answerText = $data['answer'];
+                    $answerText = $data['identificationAnswer'];
                     $choiceStmt->bind_param("isis", $nextChoiceId, $answerText, $nextQuestionId, $isAnswer);
                     $choiceStmt->execute();
                     $choiceStmt->close();
@@ -198,7 +199,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         break;
                         
                     case 'identification':
-                        $questionData['answer'] = $line[4];
+                        $questionData['identificationAnswer'] = $line[4];
                         break;
                 }
                 

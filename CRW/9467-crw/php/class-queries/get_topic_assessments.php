@@ -91,9 +91,9 @@ function displayTopicAssessments($assessments, $topic) {
                         <th>ID</th>
                         <th>Title</th>
                         <th>Published</th>
-                        <th>View Results</th>
                         <th>Start Date</th>
                         <th>End Date</th>
+                        <th>View Results</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -106,7 +106,7 @@ function displayTopicAssessments($assessments, $topic) {
                             <td><?php echo htmlspecialchars($assessment['assessment_id']); ?></td>
                             <td><?php echo htmlspecialchars($assessment['title']); ?></td>
                             <td class="is-published"><?php echo $assessment['is_published'] ? 'Yes' : 'No'; ?></td>
-                            <td class="can-view"><?php echo $assessment['can_view'] ? 'Yes' : 'No'; ?></td>
+                            
                             <td class="evaluation-start">
                                 <?php echo $assessment['evaluation_start'] 
                                     ? date('M d, Y h:i A', strtotime($assessment['evaluation_start'])) 
@@ -119,6 +119,8 @@ function displayTopicAssessments($assessments, $topic) {
                                     : 'Not Set'; 
                                 ?>
                             </td>
+                            <td class="can-view"><?php echo $assessment['can_view'] ? 'Yes' : 'No'; ?></td>
+                            
                             <td class="action-buttons">
                                 <button class="view-btn" onclick="window.location.href='assessment.php?assessment_id=<?php echo htmlspecialchars($assessment['assessment_id']); ?>'">
                                     View
