@@ -12,6 +12,7 @@ const bcrypt = require('bcrypt');
 const upload = multer({ dest: 'uploads/' });
 const app = express();
 const port = 8888;
+const bcrypt = require('bcrypt');
 
 const SALT_ROUNDS = 10; 
 app.use(express.static(path.join(__dirname)));
@@ -149,6 +150,16 @@ app.post('/api/users/add', async (req, res) => {
 
     try {
         const { first_name, last_name, email, password, user_type } = req.body;
+
+        // Validate incoming fields
+        if (!first_name || !last_name || !email || !password || !user_type) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required fields (first_name, last_name, email, password, user_type)'
+            });
+        }
+
+        // Check if the email already exists
         const [emailCheck] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
         
         if (emailCheck.length > 0) {
@@ -158,19 +169,25 @@ app.post('/api/users/add', async (req, res) => {
             });
         }
 
-        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+        // Validate password length (example: minimum 8 characters)
+        if (password.length < 8) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password must be at least 8 characters long'
+            });
+        }
+        // Instead of hashing the password, store it as plaintext
+        const plaintextPassword = password;
 
-        const [maxIdResult] = await pool.query('SELECT MAX(id) as max_id FROM users');
-        const userId = (maxIdResult[0].max_id || 0) + 1;
-        
+        // Insert the new user into the database
         const [result] = await pool.query(
-            'INSERT INTO users (id, password, email, first_name, last_name, user_type) VALUES (?, ?, ?, ?, ?, ?)',
-            [userId, hashedPassword, email, first_name, last_name, user_type]
+            'INSERT INTO users (email, first_name, last_name, password, user_type) VALUES (?, ?, ?, ?, ?)',
+            [email, first_name, last_name, plaintextPassword, user_type]
         );
 
+        // Send success response
         res.json({
             success: true,
-            user_id: userId,
             message: `User ${email} added successfully`
         });
     } catch (error) {
@@ -190,10 +207,24 @@ app.post('/api/users/edit', async (req, res) => {
     try {
         const { user_id, first_name, last_name, email, password, user_type } = req.body;
         
+        if (!user_id || !email || !first_name || !last_name || !user_type) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required fields (user_id, first_name, last_name, email, user_type)'
+            });
+        }
+
         let queryParams;
         let updateQuery;
 
         if (password) {
+            // Check if the password is valid (for example, check minimum length)
+            if (password.length < 8) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Password must be at least 8 characters long'
+                });
+            }
             const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
             updateQuery = 'UPDATE users SET password = ?, email = ?, first_name = ?, last_name = ?, user_type = ? WHERE id = ?';
             queryParams = [hashedPassword, email, first_name, last_name, user_type, user_id];
