@@ -1,0 +1,74 @@
+.loginBody {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('img/loginBackground.jpg'); 
+    background-size: cover;
+    background-color: #5d8d63;
+    font-family: Arial, sans-serif;
+    margin-top: 180px;
+}
+
+.credentials {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 500px;
+    height: 500px;
+}
+
+.logo{
+    display: flex;
+    justify-content: center;
+}
+
+#loginForm {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    width: 100%;
+    text-align: left;
+}
+
+input{
+    padding: 10px;
+    align-items: center;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 300px;
+}
+
+label[for ="email"]{
+    margin-top: 40px;
+    margin-left: 180px;
+}
+
+
+label[for="password"]{
+    margin-top: 15px;
+    margin-left: 180px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px 80px;
+    background-color: #06be00;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.wrap {
+    display: flex;
+    justify-content: center;
+}
