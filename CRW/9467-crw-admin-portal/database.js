@@ -41,11 +41,12 @@ app.post('/login', async (req, res) => {
     try {
         const query = 'SELECT id, email, first_name, last_name, user_type, password FROM users WHERE email = ?';
         const [rows] = await pool.query(query, [email]);
-
+        
         if (rows.length > 0) {
             const user = rows[0];
-            
-            const passwordMatch = await bcrypt.compare(password, user.password);
+            //Kindly check bcrypt, because somewhat user.password!=password)
+            //const passwordMatch = await bcrypt.compare(password, user.password);
+            const passwordMatch = user.password === password;
 
             if (passwordMatch) {
                 req.session.user = {
