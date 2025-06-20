@@ -51,7 +51,8 @@
                         <div id="drag-drop-area" class="drag-drop-container">
                             <input type="file" id="csv-upload" name="csv-upload" accept=".csv" style="display: none;">
                             <p>Drag and Drop CSV File or Click to Select</p>
-                            <small>CSV file should contain email addresses</small>
+                            <small>CSV file should follow the format</small>
+                            <small>(password | email | first_name | last_name | user_type)</small>
                             <p id="file-name" class="file-name"></p>
                         </div>
                     </div>
