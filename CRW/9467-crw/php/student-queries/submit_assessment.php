@@ -49,7 +49,7 @@ function checkAnswer($question_id, $answer_text, $question_type) {
         
         return $answer_text === $row['text'];
     }
-    else if ($question_type === 'multiple-choice') {
+    else if ($question_type === 'mc') {
         $sql = "SELECT is_answer FROM choices WHERE id = ? AND question_id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("ii", $answer_text, $question_id);

@@ -20,6 +20,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bind_param("i", $topicId);
         $stmt->execute();
 
+        $sql3 = "DELETE FROM assessment_results WHERE topic_id = ?";
+        $stmt3 = $conn->prepare($sql3);
+        $stmt3->bind_param("i", $topic_id);
+        $stmt3->execute();
+        $stmt3->close();
+
+        $sql4 = "DELETE FROM students_responses WHERE topic_id = ?";
+        $stmt4 = $conn->prepare($sql4);
+        $stmt4->bind_param("i", $topic_id);
+        $stmt4->execute();
+        $stmt4->close();
+
         $sql = "DELETE FROM topics WHERE id = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("i", $topicId);

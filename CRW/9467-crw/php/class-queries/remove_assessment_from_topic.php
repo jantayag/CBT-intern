@@ -6,7 +6,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $assessment_id = isset($_POST['assessment_id']) ? intval($_POST['assessment_id']) : 0;
 
     if ($topic_id > 0 && $assessment_id > 0) {
-        $sql = "UPDATE topic_assessments SET is_removed = TRUE WHERE topic_id = ? AND assessment_id = ?";
+        $sql = "DELETE FROM topic_assessments WHERE topic_id = ? AND assessment_id = ?";
         
         if ($stmt = $conn->prepare($sql)) {
             $stmt->bind_param('ii', $topic_id, $assessment_id);

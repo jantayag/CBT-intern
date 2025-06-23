@@ -258,7 +258,6 @@ function showEditTopicAssessmentModal(assessmentId, topicId) {
                 updateButtonStates(row);
                 
                 modal.style.display = 'none';
-
             } else {
                 alert('Error updating assessment: ' + result.message);
             }
@@ -266,7 +265,9 @@ function showEditTopicAssessmentModal(assessmentId, topicId) {
             console.error('Error:', error);
             alert('An error occurred while updating the assessment');
         }
+        
     };
+    
 }
 
 document.addEventListener('DOMContentLoaded', function () {
