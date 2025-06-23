@@ -12,7 +12,6 @@ const bcrypt = require('bcrypt');
 const upload = multer({ dest: 'uploads/' });
 const app = express();
 const port = 8888;
-const bcrypt = require('bcrypt');
 
 const SALT_ROUNDS = 10; 
 app.use(express.static(path.join(__dirname)));
@@ -41,12 +40,13 @@ app.post('/login', async (req, res) => {
     try {
         const query = 'SELECT id, email, first_name, last_name, user_type, password FROM users WHERE email = ?';
         const [rows] = await pool.query(query, [email]);
-        
+
         if (rows.length > 0) {
             const user = rows[0];
             //Kindly check bcrypt, because somewhat user.password!=password)
-            //const passwordMatch = await bcrypt.compare(password, user.password);
-            const passwordMatch = user.password === password;
+            //comparing excrypted strings :3
+            const passwordMatch = await bcrypt.compare(password, user.password);
+            //const passwordMatch = user.password === password;
 
             if (passwordMatch) {
                 req.session.user = {
@@ -178,7 +178,9 @@ app.post('/api/users/add', async (req, res) => {
             });
         }
         // Instead of hashing the password, store it as plaintext
-        const plaintextPassword = password;
+        //on second thought, we try hashing it
+        const plaintextPassword = await bcrypt.hash(password, SALT_ROUNDS);
+        //const plaintextPassword = password;
 
         // Insert the new user into the database
         const [result] = await pool.query(
