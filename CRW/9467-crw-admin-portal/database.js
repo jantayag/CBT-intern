@@ -9,6 +9,7 @@ const multer = require('multer');
 const csv = require('csv-parser');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
+const { SourceTextModule } = require('vm');
 const upload = multer({ dest: 'uploads/' });
 const app = express();
 const port = 8888;
@@ -45,8 +46,10 @@ app.post('/login', async (req, res) => {
             const user = rows[0];
             //Kindly check bcrypt, because somewhat user.password!=password)
             //comparing excrypted strings :3
+            console.log("Entered password:", password);
+            console.log("Stored hash:", user.password);
             const passwordMatch = await bcrypt.compare(password, user.password);
-            //const passwordMatch = user.password === password;
+            console.log("Password match:", passwordMatch);
 
             if (passwordMatch) {
                 req.session.user = {
@@ -199,6 +202,55 @@ app.post('/api/users/add', async (req, res) => {
             success: false,
             message: 'Error creating user: ' + error.message
         });
+    }
+});
+app.post('/api/users/bulk_add', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, message: 'Not authenticated' });
+    }
+
+    const users = req.body.users;
+
+    if (!Array.isArray(users)) {
+        return res.status(400).json({ success: false, message: 'Invalid data format' });
+    }
+
+    try {
+        const inserted = [];
+        const skipped = [];
+
+        for (const user of users) {
+            const { email, password, first_name, last_name, user_type } = user;
+
+            if (!email || !password || !first_name || !last_name || !user_type) {
+                skipped.push({ email, reason: 'Missing fields' });
+                continue;
+            }
+
+            const [emailCheck] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
+            if (emailCheck.length > 0) {
+                skipped.push({ email, reason: 'Email already exists' });
+                continue;
+            }
+
+            const hashed = await bcrypt.hash(password, SALT_ROUNDS);
+            await pool.query(
+                'INSERT INTO users (email, first_name, last_name, password, user_type) VALUES (?, ?, ?, ?, ?)',
+                [email, first_name, last_name, hashed, user_type]
+            );
+
+            inserted.push(email);
+        }
+
+        res.json({
+            success: true,
+            message: `Upload completed. Inserted: ${inserted.length}, Skipped: ${skipped.length}`,
+            inserted,
+            skipped
+        });
+    } catch (err) {
+        console.error('Bulk insert error:', err);
+        res.status(500).json({ success: false, message: 'Server error during bulk upload' });
     }
 });
 
