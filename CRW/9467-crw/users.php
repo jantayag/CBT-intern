@@ -74,6 +74,28 @@
 			margin-left: 280px;
 			padding: 20px;
 		}
+		.logs-section {
+    margin-top: 40px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.logs-section h2 {
+    margin-bottom: 15px;
+}
+
+#logsTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#logsTable th, #logsTable td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
 	</style>
 </head>
 <body>
@@ -116,9 +138,11 @@
 	<section id="content">
 		<?php include 'includes/nav.php'; ?>
 
-		<main id="main">
-			<?php include('php/user-queries/get_users.php'); ?>
-		</main>
+	  <main id="main">
+	     <?php include('php/user-queries/get_users.php'); ?>
+	     <?php include('php/user-queries/get_logs.php'); ?>
+      </main>
+
 	</section>
 
 	<!-- MODAL -->

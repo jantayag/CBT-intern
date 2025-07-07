@@ -119,7 +119,7 @@ li {
 }
 
 .view-btn, .del-btn, .edit-btn, .save-btn, .publish-btn, .unpublish-btn, .view2-btn, .ans-btn  {
-    background-color: #4CAF50;
+    background-color: #c4c237;
     color: white;
     padding: 10px 20px;
     margin: 5px;
@@ -129,11 +129,11 @@ li {
 }
 
 .view-btn:hover, .del-btn:hover, .view2-btn:hover {
-    background-color: #45a049;
+    background-color: #bec861;
 }
 
 .del-btn {
-    background-color: #f44336;
+    background-color: #a33129;
 }
 
 .del-btn:hover {
