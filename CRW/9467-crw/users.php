@@ -77,7 +77,6 @@
 	</style>
 </head>
 <body>
-
 	<!-- SIDEBAR -->
 	<section id="sidebar">
 		<div class="brand">
@@ -125,7 +124,7 @@
 	<!-- MODAL -->
 	<div class="modal" id="usersModal">
 		<div class="modal-content">
-			<form action="php/user-queries/add_user.php" method="post" id="userForm">
+		    <form action="php/user-queries/add_user.php" method="post" id="userForm" enctype="multipart/form-data">
 				<h2 class="question-form-heading">Create User</h2>
 
 				<div class="form-group">
@@ -156,8 +155,6 @@
 					<div id="drag-drop-area" class="drag-drop-container">
 						<input type="file" id="csv-upload" name="csv-upload" accept=".csv" style="display: none;" />
 						<p>Drag and Drop CSV File or Click to Select</p>
-						<small>CSV file should follow the format</small>
-						<small>(password | email | first_name | last_name | user_type)</small>
 						<p id="file-name" class="file-name"></p>
 					</div>
 				</div>
