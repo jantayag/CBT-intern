@@ -283,6 +283,12 @@ function addAssessments() {
     const topicId = addButton.getAttribute('data-topic-id');
 
     const checkedAssessments = document.querySelectorAll('#addAssessmentModal input[name="assessment_ids[]"]:checked');
+    
+     if (checkedAssessments.length === 0) {
+        alert('Please select at least one assessment to add.');
+        return;
+    }
+
     const assessmentIds = Array.from(checkedAssessments).map(checkbox => checkbox.value);
 
     fetch('php/class-queries/add_assessments.php', {

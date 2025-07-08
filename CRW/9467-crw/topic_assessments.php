@@ -57,7 +57,7 @@ $assessments = getTopicAssessments($topic_id);
                 </div>
             </div>
             <div class="form-actions">
-                <input class="save-btn" type="submit" value="Save"/>
+                <button class="save-btn" type="button" onclick="saveAndPublish()">Save & Publish</button>
                 <button class="del-btn" type="button" onclick="cancelForm()">Cancel</button>
             </div>
         </form>

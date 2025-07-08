@@ -23,7 +23,6 @@ include('php/student-queries/get_question_points.php');
 
         </div>
         
-        <img src="img/form_bg.jpg" alt="header-img">
         <div class="main">
             <h1><?php echo htmlspecialchars($assessment['title']); ?></h1>
             <hr/>
@@ -71,6 +70,12 @@ include('php/student-queries/get_question_points.php');
                     <?php echo $question_points; ?> pts
                 </div>
             </div>
+            <?php if (!empty($question['image_path'])): ?>
+                        <div class="question-image">
+                            <img src="<?php echo htmlspecialchars($question['image_path']); ?>" alt="Question Image" style="max-width:100%; margin-top:10px; border-radius:8px;">
+                        </div>
+                    <?php endif; ?>
+
                 <?php if ($question_type === 'identification'): ?>
                     <input type="text" value="<?php echo htmlspecialchars($student_answer); ?>" readonly />
                     <?php if (!$is_correct): ?>
@@ -109,7 +114,7 @@ include('php/student-queries/get_question_points.php');
 
         <div class="policy">
             <p>This web application is created by CRW for their course in 9467-IT-312 | Web Technologies taught by Kasima Mendoza and Brittany Baldovino.</p>
-            <h1 class="adal">Adal</h1>
+            <h1 class="adal">MyReach</h1>
         </div>
     </form>
     <script src="scripts/assessment_results.js"></script>

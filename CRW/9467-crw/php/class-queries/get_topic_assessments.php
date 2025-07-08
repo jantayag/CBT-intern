@@ -129,9 +129,7 @@ function displayTopicAssessments($assessments, $topic) {
                                     <button class="edit-btn" onclick="showEditTopicAssessmentModal(<?php echo htmlspecialchars($assessment['assessment_id']); ?>, <?php echo htmlspecialchars($topic['id']); ?>)">
                                         Edit
                                     </button>
-                                    <button class="publish-btn" onclick="publishAssessment(<?php echo $assessment['assessment_id']; ?>, <?php echo htmlspecialchars($topic['id']); ?>)">
-                                        Publish
-                                    </button>
+
                                     <button class="unpublish-btn" style="display: none;" onclick="unpublishAssessment(<?php echo $assessment['assessment_id']; ?>, <?php echo htmlspecialchars($topic['id']); ?>)">
                                         Unpublish
                                     </button>

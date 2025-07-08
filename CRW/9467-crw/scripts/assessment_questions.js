@@ -86,6 +86,27 @@ function showQuestionSelection(assessmentId) {
     document.getElementById('questionSelectionModal').style.display = 'block';
 }
 
+function editAssessment(id) {
+    fetch(`php/assessment-queries/get_assessment.php?assessment_id=${id}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const form = document.getElementById('assessmentForm');
+                form.reset();
+                document.querySelector('.question-form-heading').textContent = 'Edit Assessment';
+                document.getElementById('title').value = data.assessment.title;
+                document.getElementById('assessment_id').value = id;
+                document.getElementById('assessmentModal').style.display = 'block';
+            } else {
+                alert('Failed to load assessment: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while fetching assessment details.');
+        });
+}
+
 function closeQuestionSelection() {
     document.getElementById('questionSelectionModal').style.display = 'none';
 }

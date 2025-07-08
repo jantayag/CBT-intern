@@ -5,6 +5,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $topic_id = $_POST['topic_id'];
     $assessmentIds = explode(',', $_POST['assessment_ids']);
 
+    if (empty($assessmentIds)) {
+        echo json_encode(['success' => false, 'message' => 'Please select at least one assessment to add.']);
+        exit;
+    }
+
     try {
         $conn->begin_transaction();
 
@@ -22,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         $conn->rollback();
         header('Content-Type: application/json');
-        echo json_encode(['success' => false, 'message' => 'You did not select an assessment.']);
+        echo json_encode(['success' => false, 'message' => 'Please select at least one assessment to add.']);
     }
 }
 ?>

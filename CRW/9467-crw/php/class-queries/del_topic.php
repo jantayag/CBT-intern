@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt3->execute();
         $stmt3->close();
 
-        $sql4 = "DELETE FROM students_responses WHERE topic_id = ?";
+        $sql4 = "DELETE FROM student_responses WHERE topic_id = ?";
         $stmt4 = $conn->prepare($sql4);
         $stmt4->bind_param("i", $topic_id);
         $stmt4->execute();

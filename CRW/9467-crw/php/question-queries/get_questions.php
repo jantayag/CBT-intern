@@ -5,7 +5,10 @@ include('php/objects/question.php');
 function getQuestions() {
     global $conn;
     
-    $sql = "SELECT * FROM questions WHERE true";
+   $sql = "SELECT q.*, c.text AS correct_answer
+        FROM questions q
+        LEFT JOIN choices c ON q.id = c.question_id AND c.is_answer = 'Y'
+        WHERE true";
     $params = array();
     $types = "";
     
@@ -65,7 +68,8 @@ function getQuestions() {
                 $row['question_text'],
                 $row['difficulty'],
                 $row['points'],
-                $row['type']
+                $row['type'],
+                $row['correct_answer'] ?? ''
             );
         }
     }
@@ -120,7 +124,9 @@ function displayQuestionsTable($questions) {
                             <th>Difficulty</th>
                             <th>Points</th>
                             <th>Type</th>
+                            <th>Answer</th>
                             <th>Actions</th>
+                            
                         </tr>
                     </thead>
                     <tbody id="questions-tbody">
@@ -131,10 +137,9 @@ function displayQuestionsTable($questions) {
                                 <td><?php echo htmlspecialchars($question->getDifficulty()); ?></td>
                                 <td><?php echo htmlspecialchars($question->getPoints()); ?></td>
                                 <td><?php echo htmlspecialchars($question->getType()); ?></td>
+                                <td><?php echo htmlspecialchars($question->getCorrectAnswer()); ?></td>
                                 <td class="action-buttons">
-                                    <button class="view-btn" onclick="viewAnswers(<?php echo $question->getId(); ?>)">
-                                        View Answer
-                                    </button>
+                                    
                                     <button class="edit-btn" onclick="editQuestion(<?php echo $question->getId(); ?>)">
                                         Edit
                                     </button>

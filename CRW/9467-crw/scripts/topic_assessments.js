@@ -23,10 +23,7 @@ function publishAssessment(assessmentId, topicId) {
     const evaluationStart = row.querySelector('.evaluation-start').textContent.trim();
     const evaluationEnd = row.querySelector('.evaluation-end').textContent.trim();
 
-    if (!evaluationStart || !evaluationEnd || evaluationStart === 'Not Set' || evaluationEnd === 'Not Set') {
-        alert('Cannot publish assessment. Please set both evaluation start and evaluation end dates.');
-        return;
-    }
+ 
 
     fetch('php/class-queries/publish_assessment.php', {
         method: 'POST',
@@ -40,13 +37,11 @@ function publishAssessment(assessmentId, topicId) {
         if (data.success) {
             alert(data.message);
 
-            const publishedCell = row.querySelector('.is-published');
-            const publishBtn = row.querySelector('.publish-btn');
+            const publishedCell = row.querySelector('.is-published');   
             const unpublishBtn = row.querySelector('.unpublish-btn');
             const editBtn = row.querySelector('.edit-btn');
 
-            publishedCell.textContent = 'Yes';
-            publishBtn.style.display = 'none';  
+            publishedCell.textContent = 'Yes'; 
             unpublishBtn.style.display = '';    
             editBtn.style.display = 'none';     
         } else {
@@ -57,6 +52,50 @@ function publishAssessment(assessmentId, topicId) {
         console.error('Error:', error);
         alert('An error occurred while publishing the assessment.');
     });
+}
+
+async function saveAndPublish() {
+    const form = document.getElementById('assessmentForm');
+    const evaluationStartInput = document.getElementById('evaluation_start');
+    const evaluationEndInput = document.getElementById('evaluation_end');
+    const modal = document.getElementById('assessmentModal');
+
+    const formData = new FormData(form);
+
+    if (!evaluationStartInput.value) {
+        formData.set('evaluation_start', '');
+    }
+    if (!evaluationEndInput.value) {
+        formData.set('evaluation_end', '');
+    }
+
+    try {
+        const response = await fetch('php/class-queries/edit_topic_assessment.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Extract IDs from hidden fields
+            const assessmentId = formData.get('assessment_id');
+            const topicId = formData.get('topic_id');
+
+            // Hide the modal
+            modal.style.display = 'none';
+
+            // Wait briefly to ensure DB update
+            setTimeout(() => {
+                publishAssessment(assessmentId, topicId);
+            }, 100); // optional delay before publish
+        } else {
+            alert('Error updating assessment: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while saving and publishing the assessment.');
+    }
 }
 
 function unpublishAssessment(assessmentId, topicId) {
@@ -100,12 +139,10 @@ function unpublishAssessment(assessmentId, topicId) {
 
             const row = document.querySelector(`#assessment-${assessmentId}`);
             const publishedCell = row.querySelector('.is-published');
-            const publishBtn = row.querySelector('.publish-btn');
             const unpublishBtn = row.querySelector('.unpublish-btn');
             const editBtn = row.querySelector('.edit-btn');
 
-            publishedCell.textContent = 'No';
-            publishBtn.style.display = '';      
+            publishedCell.textContent = 'No';    
             unpublishBtn.style.display = 'none';
             editBtn.style.display = '';        
         } else if (data) {
@@ -417,16 +454,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     assessmentRows.forEach(row => {
         const isPublished = row.querySelector('.is-published').textContent === 'Yes';
-        const publishBtn = row.querySelector('.publish-btn');
         const unpublishBtn = row.querySelector('.unpublish-btn');
         const editBtn = row.querySelector('.edit-btn');
         
         if (isPublished) {
-            publishBtn.style.display = 'none';
             unpublishBtn.style.display = '';
             editBtn.style.display = 'none';
         } else {
-            publishBtn.style.display = '';
             unpublishBtn.style.display = 'none';
             editBtn.style.display = '';
 

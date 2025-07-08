@@ -5,13 +5,19 @@ class Question {
     private $difficulty;
     private $points;
     private $type;
+    private $correctAnswer;
 
-    public function __construct($id, $questionText, $difficulty, $points, $type) {
+    public function __construct($id, $question_text, $difficulty, $points, $type, $correctAnswer = null) {
         $this->id = $id;
-        $this->questionText = $questionText;
+        $this->questionText = $question_text;
         $this->difficulty = $difficulty;
         $this->points = $points;
         $this->type = $type;
+        $this->correctAnswer = $correctAnswer;
+    }
+
+    public function getCorrectAnswer() {
+        return $this->correctAnswer;
     }
 
     public function getId() {

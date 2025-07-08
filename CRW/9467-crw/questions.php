@@ -25,7 +25,7 @@
              <!-- add/edit question form -->
     <div class="modal" style="display: none;">
         <div class="modal-content">
-            <form action="php/question-queries/add_question.php" method="post" id="questionForm">
+            <form action="php/question-queries/add_question.php" method="post" id="questionForm" enctype="multipart/form-data">
                 <h2 class="question-form-heading">Add New Question</h2>
                     <div class="form-group">
                         <label for="question_text">Question:</label>
@@ -42,10 +42,10 @@
                         </select>
                     </div>
 
-                    <div class="form-group">
-                        <label for="points">Points:</label>
-                        <input type="number" name="points" id="points"/>
-                    </div>
+                <div class="form-group">
+                    <label for="points">Points:</label>
+                    <input type="number" name="points" id="points" min="0" value="1" required />
+                </div>
 
                     <div class="form-group">
                         <label for="type">Type:</label>
@@ -96,6 +96,11 @@
                         <input class="view-btn" type="submit" value="Add" />
                         <input class="save-btn" type="submit" value="Save"/>
                         <button class="del-btn" type="button" onclick="cancelForm()">Cancel</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="question_image">Image (optional):</label>
+                        <input type="file" name="question_image" id="question_image" accept="image/*">
                     </div>
             </form>
         </div>
