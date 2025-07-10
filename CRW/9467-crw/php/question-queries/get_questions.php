@@ -4,41 +4,35 @@ include('php/objects/question.php');
 
 function getQuestions() {
     global $conn;
-    
-   $sql = "SELECT q.*, c.text AS correct_answer
-        FROM questions q
-        LEFT JOIN choices c ON q.id = c.question_id AND c.is_answer = 'Y'
-        WHERE true";
+
+    $sql = "SELECT q.*, c.text AS correct_answer
+            FROM questions q
+            LEFT JOIN choices c ON q.id = c.question_id AND c.is_answer = 'Y'
+            WHERE true";
     $params = array();
     $types = "";
-    
-    // searching
+
     if (isset($_GET['question-text']) && !empty($_GET['question-text'])) {
         $sql .= " AND question_text LIKE ?";
         $searchTerm = "%" . $_GET['question-text'] . "%";
         $params[] = $searchTerm;
         $types .= "s";
     }
-    
-    // filtering
+
     if (isset($_GET['filter']) && $_GET['filter'] !== 'default') {
         $filterValue = $_GET['filter'];
-        
-        // if filter by type
+
         if (in_array($filterValue, ['identification', 'multiple-choice', 'alternate-response'])) {
             $sql .= " AND type = ?";
             $params[] = $filterValue;
             $types .= "s";
-        }
-        // if filter bydifficulty
-        elseif (in_array($filterValue, ['easy', 'intermediate', 'advanced'])) {
+        } elseif (in_array($filterValue, ['easy', 'intermediate', 'advanced'])) {
             $sql .= " AND LOWER(difficulty) = ?";
             $params[] = ucfirst($filterValue);
             $types .= "s";
         }
     }
-    
-    // sorting
+
     if (isset($_GET['sort']) && $_GET['sort'] !== 'default') {
         switch ($_GET['sort']) {
             case 'id-asc':
@@ -49,9 +43,8 @@ function getQuestions() {
                 break;
         }
     } else {
-        $sql .= " ORDER BY id ASC"; 
+        $sql .= " ORDER BY id ASC";
     }
-    
 
     $stmt = $conn->prepare($sql);
     if (!empty($params)) {
@@ -59,7 +52,7 @@ function getQuestions() {
     }
     $stmt->execute();
     $result = $stmt->get_result();
-    
+
     $questions = [];
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -69,11 +62,12 @@ function getQuestions() {
                 $row['difficulty'],
                 $row['points'],
                 $row['type'],
-                $row['correct_answer'] ?? ''
+                $row['correct_answer'] ?? '',
+                $row['image_path'] ?? null // New
             );
         }
     }
-    
+
     return $questions;
 }
 
@@ -88,7 +82,7 @@ function displayQuestionsTable($questions) {
             <form action="" method="get">
                 <input type="text" class="search-bar" name="question-text" 
                        placeholder="Search questions..." value="<?php echo $currentSearch; ?>">
-                
+
                 <select name="filter" id="sortnfilter">
                     <option value="default" <?php echo $currentFilter === 'default' ? 'selected' : ''; ?>>Filter by: Default</option>
                     <option value="identification" <?php echo $currentFilter === 'identification' ? 'selected' : ''; ?>>Filter by: Type (identification)</option>
@@ -98,13 +92,13 @@ function displayQuestionsTable($questions) {
                     <option value="intermediate" <?php echo $currentFilter === 'intermediate' ? 'selected' : ''; ?>>Filter by: Difficulty (Intermediate)</option>
                     <option value="advanced" <?php echo $currentFilter === 'advanced' ? 'selected' : ''; ?>>Filter by: Difficulty (Advanced)</option>
                 </select>
-                
+
                 <select name="sort" id="sortnfilter">
                     <option value="default" <?php echo $currentSort === 'default' ? 'selected' : ''; ?>>Sort by: Default</option>
                     <option value="id-asc" <?php echo $currentSort === 'id-asc' ? 'selected' : ''; ?>>Sort by: ID (ASC)</option>
                     <option value="id-desc" <?php echo $currentSort === 'id-desc' ? 'selected' : ''; ?>>Sort by: ID (DESC)</option>
                 </select>
-                
+
                 <button type="submit" class="action-btn">Apply Filters</button>
             </form>
             <div class="question-actions">
@@ -112,7 +106,7 @@ function displayQuestionsTable($questions) {
             </div>
         </div>
     </div>
-    
+
     <?php if (!empty($questions)): ?>
         <div id="questions-container">
             <div class="table-responsive">
@@ -125,8 +119,8 @@ function displayQuestionsTable($questions) {
                             <th>Points</th>
                             <th>Type</th>
                             <th>Answer</th>
+                            <th>Image</th> <!-- New column -->
                             <th>Actions</th>
-                            
                         </tr>
                     </thead>
                     <tbody id="questions-tbody">
@@ -138,14 +132,15 @@ function displayQuestionsTable($questions) {
                                 <td><?php echo htmlspecialchars($question->getPoints()); ?></td>
                                 <td><?php echo htmlspecialchars($question->getType()); ?></td>
                                 <td><?php echo htmlspecialchars($question->getCorrectAnswer()); ?></td>
+                                <td>
+                                    <?php
+                                        $imagePath = method_exists($question, 'getImagePath') ? $question->getImagePath() : '';
+                                        echo $imagePath ? 'Yes' : 'None';
+                                    ?>
+                                </td>
                                 <td class="action-buttons">
-                                    
-                                    <button class="edit-btn" onclick="editQuestion(<?php echo $question->getId(); ?>)">
-                                        Edit
-                                    </button>
-                                    <button class="del-btn" onclick="deleteQuestion(<?php echo $question->getId(); ?>)">
-                                        Delete
-                                    </button>
+                                    <button class="edit-btn" onclick="editQuestion(<?php echo $question->getId(); ?>)">Edit</button>
+                                    <button class="del-btn" onclick="deleteQuestion(<?php echo $question->getId(); ?>)">Delete</button>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -155,10 +150,9 @@ function displayQuestionsTable($questions) {
         </div>
     <?php else: ?>
         <div class="no-questions">No questions found.</div>
-    <?php endif; ?>
-<?php
+    <?php endif;
 }
 
 $questions = getQuestions();
-        displayQuestionsTable($questions);
+displayQuestionsTable($questions);
 ?>

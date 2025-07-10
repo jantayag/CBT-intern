@@ -3,14 +3,12 @@ include('php/db.php');
 
 function getAssessments() {
     global $conn;
-    
-    $sql = "SELECT id, title, date_created
-            FROM assessments";
-            
+
+    $sql = "SELECT id, title, date_created FROM assessments";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
-    
+
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
@@ -44,9 +42,13 @@ function displayAssessments($assessments) {
                                 <button class="edit-btn" onclick="editAssessment(<?php echo htmlspecialchars($assessment['id']); ?>)">
                                     Edit
                                 </button>
+                                 <button class="view-btn" onclick="window.location.href='assessment_statistics.php?assessment_id=<?php echo htmlspecialchars($assessment['id']); ?>'">
+                                    View Statistics
+                                </button>
                                 <button class="del-btn" onclick="deleteAssessment(<?php echo htmlspecialchars($assessment['id']); ?>)">
                                     Delete
                                 </button>
+                               
                             </td>
                         </tr>
                     <?php endforeach; ?>

@@ -173,13 +173,31 @@ function addSingleQuestion($conn, $data, $imagePath = null, $isCsv = false) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $response = ['success' => false, 'message' => '', 'results' => []];
 
-    $imagePath = null;
-    if (isset($_FILES['question_image']) && $_FILES['question_image']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = '../uploads/';
-        $imagePath = $uploadDir . basename($_FILES['question_image']['name']);
-        move_uploaded_file($_FILES['question_image']['tmp_name'], $imagePath);
+   $imagePath = null;
+if (isset($_FILES['question_image']) && $_FILES['question_image']['error'] === UPLOAD_ERR_OK) {
+    $uploadDirRelativeToPhp = '../../../uploads/';  // From /php/question-queries/
+    $uploadDirForDb = '../uploads/';
+
+    if (!is_dir($uploadDirRelativeToPhp)) {
+        mkdir($uploadDirRelativeToPhp, 0777, true);
     }
 
+    $fileName = basename($_FILES['question_image']['name']);
+    $extension = pathinfo($fileName, PATHINFO_EXTENSION);
+
+    $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+    if (!in_array(strtolower($extension), $allowed)) {
+        throw new Exception("Invalid image type. Allowed: JPG, JPEG, PNG, GIF.");
+    }
+
+    $destinationPath = $uploadDirRelativeToPhp . $fileName;
+
+    if (!move_uploaded_file($_FILES['question_image']['tmp_name'], $destinationPath)) {
+        throw new Exception("Image upload failed.");
+    }
+
+    $imagePath = $uploadDirForDb . $fileName; // This gets stored in DB
+}
     if (isset($_FILES['csv-upload']) && $_FILES['csv-upload']['size'] > 0) {
         try {
             $file = fopen($_FILES['csv-upload']['tmp_name'], 'r');

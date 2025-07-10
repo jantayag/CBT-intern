@@ -267,7 +267,16 @@ function editQuestion(questionId) {
                         }
                         break;
                 }
-            
+
+              // ✅ Display image file name if present
+                const imageNameDisplay = document.getElementById('selected-image-name');
+                if (data.question.image_path) {
+                    const imageName = data.question.image_path.split('/').pop(); // extract filename
+                    imageNameDisplay.textContent = `Current Image: ${imageName}`;
+                } else {
+                    imageNameDisplay.textContent = 'No image uploaded.';
+                }
+
                 modal.style.display = 'block';
             } else {
                 alert('Error loading question: ' + data.message);

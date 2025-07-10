@@ -70,6 +70,16 @@ function getAssessmentQuestions($assessment_id) {
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
+function getCorrectAnswer($question_id) {
+    global $conn;
+    $stmt = $conn->prepare("SELECT text FROM choices WHERE question_id = ? AND is_answer = 'Y' LIMIT 1");
+    $stmt->bind_param("i", $question_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $answer = $result->fetch_assoc();
+    return $answer['text'] ?? 'N/A';
+}
+
 function displayAssessmentQuestions($questions, $assessment) {
     $currentSearch = htmlspecialchars($_GET['question-text'] ?? '');
     $currentFilter = $_GET['filter'] ?? 'default';
@@ -119,6 +129,7 @@ function displayAssessmentQuestions($questions, $assessment) {
                             <th>Difficulty</th>
                             <th>Points</th>
                             <th>Type</th>
+                            <th>Answer</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -133,10 +144,8 @@ function displayAssessmentQuestions($questions, $assessment) {
                             <td><?php echo htmlspecialchars($question['difficulty']); ?></td>
                             <td><?php echo htmlspecialchars($question['points']); ?></td>
                             <td><?php echo htmlspecialchars($question['type']); ?></td>
+                            <td><?php echo htmlspecialchars(getCorrectAnswer($question['id'])); ?></td>
                             <td class="action-buttons">
-                                <button class="view-btn" onclick="viewAnswers(<?php echo $question['id']; ?>)">
-                                    View Answer
-                                </button>
                                 <button class="del-btn" onclick="removeQuestionFromAssessment(<?php echo $assessment['id']; ?>, <?php echo $question['id']; ?>)">
                                     Remove
                                 </button>
@@ -150,6 +159,8 @@ function displayAssessmentQuestions($questions, $assessment) {
     <?php else: ?>
         <div class="no-questions">No questions found.</div>
     <?php endif; ?>
+    
 <?php
+
 }
 ?>

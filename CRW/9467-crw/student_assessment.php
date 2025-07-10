@@ -63,7 +63,7 @@ $questions = getAssessmentQuestions($assessment_id);
             <h1><?php echo htmlspecialchars($assessment['title']); ?></h1>
             <hr/>
             <p>
-                we prioritize the security and confidentiality of your information. Any data you provide during this assessment,
+                We prioritize the security and confidentiality of your information. Any data you provide during this assessment,
                 including your responses, will only be used for evaluation and improvement of your learning experience.
                 Your data will not be shared with third parties, and all submissions are securely stored in compliance with data protection standards. 
                 Rest assured, your privacy is our priority.
@@ -88,7 +88,7 @@ $questions = getAssessmentQuestions($assessment_id);
                         <h3><?php echo ($index + 1) . ". " . htmlspecialchars($question['question_text']); ?> <span style="color: red;">*</span></h3>
 
                         <div class="question-points">
-                            <?php echo $question_points; ?> pts
+                            <?php echo $question_points; ?> pt/s
                         </div>
                     </div>
                     <?php if (!empty($question['image_path'])): ?>
@@ -106,7 +106,7 @@ $questions = getAssessmentQuestions($assessment_id);
                     <div class="question-header">
                         <h3><?php echo ($index + 1) . ". " . htmlspecialchars($question['question_text']); ?> <span style="color: red;">*</span></h3>
                         <div class="question-points">
-                            <?php echo $question_points; ?> pts
+                            <?php echo $question_points; ?> pt/s
                         </div>
                     </div>
                     <<?php if (!empty($question['image_path'])): ?>
@@ -129,7 +129,7 @@ $questions = getAssessmentQuestions($assessment_id);
                     <div class="question-header">
                         <h3><?php echo ($index + 1) . ". " . htmlspecialchars($question['question_text']); ?> <span style="color: red;">*</span></h3>
                         <div class="question-points">
-                            <?php echo $question_points; ?> pts
+                            <?php echo $question_points; ?> pt/s
                         </div>
                     </div>
                     <?php if (!empty($question['image_path'])): ?>

@@ -19,7 +19,7 @@ include('php/student-queries/get_question_points.php');
             <?php echo $score; ?> / <?php echo $total_score; ?>
             (<?php echo round(($score / $total_score) * 100, 1); ?>%)
             </h3>
-            <img id="return-btn" src="img/return-button.svg" alt="return to topic_assessments page" onclick="window.location.href='topic_assessments.php?topic_id=<?php echo htmlspecialchars($topic_id); ?>'">
+            <img id="return-btn" src="img/return-button.svg" alt="return to topic_assessments page" onclick="history.back()">'">
 
         </div>
         
@@ -27,7 +27,7 @@ include('php/student-queries/get_question_points.php');
             <h1><?php echo htmlspecialchars($assessment['title']); ?></h1>
             <hr/>
             <p>
-                At Adal, we prioritize the security and confidentiality of your information. Any data you provide during this assessment,
+                We prioritize the security and confidentiality of your information. Any data you provide during this assessment,
                 including your responses, will only be used for evaluation and improvement of your learning experience.
                 Your data will not be shared with third parties, and all submissions are securely stored in compliance with data protection standards. 
                 Rest assured, your privacy is our priority.
@@ -113,7 +113,7 @@ include('php/student-queries/get_question_points.php');
         <?php endforeach; ?>
 
         <div class="policy">
-            <p>This web application is created by CRW for their course in 9467-IT-312 | Web Technologies taught by Kasima Mendoza and Brittany Baldovino.</p>
+        
             <h1 class="adal">MyReach</h1>
         </div>
     </form>

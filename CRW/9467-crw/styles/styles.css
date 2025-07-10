@@ -316,3 +316,16 @@ small {
     vertical-align: middle;
     margin-right: 10px;
 }
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+#return-btn {
+    width: 32px; /* adjust size if needed */
+    height: auto;
+    cursor: pointer;
+}

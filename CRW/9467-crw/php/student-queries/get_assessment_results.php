@@ -54,8 +54,11 @@ function getStudentScore($student_id, $assessment_id) {
     $stmt->bind_param("ii", $student_id, $assessment_id);
     $stmt->execute();
     $result = $stmt->get_result();
-    return $result->fetch_assoc()['score'];
+    $row = $result->fetch_assoc();
+
+    return $row ? $row['score'] : 0; // return 0 or null if not found
 }
+
 
 function getTotalScore($assessment_id) {
     global $conn;

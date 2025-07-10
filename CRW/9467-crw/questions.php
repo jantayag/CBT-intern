@@ -88,7 +88,7 @@
                         <div id="drag-drop-area" class="drag-drop-container">
                             <input type="file" id="csv-upload" name="csv-upload" accept=".csv" style="display: none;">
                             <p>Drag and Drop CSV File or Click to Select</p>
-                            <small>CSV file should contain questions, choices, type, difficulty</small>
+                            <small>CSV file should contain questions, difficulty, type, answer, image path and other choices (for multiple-choice)</small>
                             <p id="file-name" class="file-name"></p>
                         </div>
                     </div>
@@ -101,6 +101,7 @@
                     <div class="form-group">
                         <label for="question_image">Image (optional):</label>
                         <input type="file" name="question_image" id="question_image" accept="image/*">
+                        <p id="selected-image-name" style="font-size: 0.9rem; margin-top: 5px; color: #555;"></p>
                     </div>
             </form>
         </div>
