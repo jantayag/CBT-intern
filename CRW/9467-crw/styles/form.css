@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    background-color: #d9d7f1;
+    background-color: #dbe1f5;
   }
 
   form {
@@ -17,7 +17,7 @@
     width: 50vw;
     box-sizing: border-box;
     background-color: white;
-    border-top: 12px solid #241f73;
+    border-top: 12px solid #261e51;
     border-radius: 10px;
     margin: 13px;
     margin-bottom: 0;
@@ -95,13 +95,13 @@
     left: 400px;
     padding: 8px 20px;
     border-radius: 3px;
-    background-color: #240e72;
+    background-color: #2b1e51;
     border: none;
     color: white;
   }
    
   button:hover {
-    background-color: #2c44ad;
+    background-color: #3d459f;
     transition: ease-in 200ms;
   }
   
@@ -278,7 +278,7 @@
       border-radius: 5px;
     }
   }
-
+  
 .identification,
 .alt-response,
 .mc {

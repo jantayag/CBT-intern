@@ -133,6 +133,9 @@ function displayTopicAssessments($assessments, $topic) {
                                     <button class="unpublish-btn" style="display: none;" onclick="unpublishAssessment(<?php echo $assessment['assessment_id']; ?>, <?php echo htmlspecialchars($topic['id']); ?>)">
                                         Unpublish
                                     </button>
+                                     <button class="view-btn" onclick="window.location.href='assessment_statistics.php?assessment_id=<?php echo htmlspecialchars($assessment['assessment_id']); ?>'">
+                                        View Statistics
+                                    </button>
                                     <button class="del-btn" onclick="removeAssessment(<?php echo htmlspecialchars($assessment['assessment_id']); ?>, <?php echo htmlspecialchars($topic['id']); ?>)">
                                         Remove
                                     </button>
