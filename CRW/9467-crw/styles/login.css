@@ -4,7 +4,7 @@
     align-items: center;
     background-image: url('img/loginBackground.jpg'); 
     background-size: cover;
-    background-color: #5d8d63;
+    background-color: #071654;
     font-family: Arial, sans-serif;
     margin-top: 180px;
 }
@@ -60,7 +60,7 @@ label[for="password"]{
 button {
     margin-top: 20px;
     padding: 12px 80px;
-    background-color: #06be00;
+    background-color: #e7bd03;
     color: white;
     border: none;
     border-radius: 5px;
