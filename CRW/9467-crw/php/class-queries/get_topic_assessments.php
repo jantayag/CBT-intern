@@ -127,7 +127,7 @@ function displayTopicAssessments($assessments, $topic) {
                                 </button>
                                 <?php if (!isset($assessment['is_removed']) || !$assessment['is_removed']): ?>
                                     <button class="edit-btn" onclick="showEditTopicAssessmentModal(<?php echo htmlspecialchars($assessment['assessment_id']); ?>, <?php echo htmlspecialchars($topic['id']); ?>)">
-                                        Edit
+                                        Publish
                                     </button>
 
                                     <button class="unpublish-btn" style="display: none;" onclick="unpublishAssessment(<?php echo $assessment['assessment_id']; ?>, <?php echo htmlspecialchars($topic['id']); ?>)">
