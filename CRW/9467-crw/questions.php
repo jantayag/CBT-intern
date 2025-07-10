@@ -67,7 +67,7 @@
                     </div>
 
             <!-- multiple-choice -->
-                    <div id="multiple-choice" class="answer-container" style="display: none;">
+                    <div id="mc" class="answer-container" style="display: none;">
                         <label>Choices:</label>
                         <div id="choices-container">
                             <div class="choice">

@@ -14,14 +14,20 @@ $stmt->bind_result($assessmentTitle);
 $stmt->fetch();
 $stmt->close();
 
-// Get total items for the assessment
-$totalItems = 0;
-$itemQuery = $conn->prepare("SELECT COUNT(*) FROM assessment_questions WHERE assessment_id = ?");
-$itemQuery->bind_param("i", $assessment_id);
-$itemQuery->execute();
-$itemQuery->bind_result($totalItems);
-$itemQuery->fetch();
-$itemQuery->close();
+// Get total points for the assessment
+$totalPoints = 0;
+$pointsQuery = $conn->prepare("
+    SELECT SUM(q.points) 
+    FROM assessment_questions aq 
+    JOIN questions q ON aq.question_id = q.id 
+    WHERE aq.assessment_id = ?
+");
+$pointsQuery->bind_param("i", $assessment_id);
+$pointsQuery->execute();
+$pointsQuery->bind_result($totalPoints);
+$pointsQuery->fetch();
+$pointsQuery->close();
+
 
 // Fetch results
 $results = [];
@@ -37,7 +43,7 @@ $stmt->bind_param("i", $assessment_id);
 $stmt->execute();
 $result = $stmt->get_result();
 while ($row = $result->fetch_assoc()) {
-    $row['percentage'] = $totalItems > 0 ? round(($row['score'] / $totalItems) * 100, 2) : 0;
+   $row['percentage'] = $totalPoints > 0 ? round(($row['score'] / $totalPoints) * 100, 2) : 0;
     $results[] = $row;
 }
 $stmt->close();
@@ -61,7 +67,7 @@ $stmt->close();
         <main id="main">
             <div class="heading2">
                 <h1>Statistics for: <?php echo htmlspecialchars($assessmentTitle); ?></h1>
-                <img id="return-btn" src="img/return-button.svg" alt="return to classes page" onclick="window.location.href='classes.php'">
+                <img id="return-btn" src="img/return-button.svg" alt="return to classes page" onclick="window.location.href=history.back()">
                         
             </div>
             
@@ -83,7 +89,7 @@ $stmt->close();
                             <?php foreach ($results as $row): ?>
                                 <tr onclick="window.location.href='view_assessment.php?assessment_id=<?php echo $assessment_id; ?>&student_id=<?php echo $row['student_id']; ?>'" style="cursor: pointer;">
                                     <td><?php echo htmlspecialchars($row['first_name'] . ' ' . $row['last_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($row['score']) . ' / ' . $totalItems; ?></td>
+                                    <td><?php echo htmlspecialchars($row['score']) . ' / ' . $totalPoints; ?> pts</td>
                                     <td><?php echo htmlspecialchars($row['percentage']) . '%'; ?></td>
                                 </tr>
                             <?php endforeach; ?>

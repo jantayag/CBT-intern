@@ -70,51 +70,47 @@ $questions = getAssessmentQuestions($assessment_id);
             </p>
         </div>
 
-        <?php foreach ($questions as $index => $question): ?>
+       <?php foreach ($questions as $index => $question): ?>
             <?php 
             $question_id = $question['id'];
             $question_type = $question['type'];
             $choices = getChoices($question_id, $question_type);
-            $question_points = getQuestionPoints($question_id, $assessment_id);
-            
-            ?>
 
-            
+            // 🔀 Shuffle choices only for multiple-choice questions
+            if ($question_type === 'mc') {
+                shuffle($choices);
+            }
+
+            $question_points = getQuestionPoints($question_id, $assessment_id);
+            ?>
             
             <!-- identification -->
             <?php if ($question_type === 'identification'): ?>
                 <div class="identification">
                     <div class="question-header">
                         <h3><?php echo ($index + 1) . ". " . htmlspecialchars($question['question_text']); ?> <span style="color: red;">*</span></h3>
-
-                        <div class="question-points">
-                            <?php echo $question_points; ?> pt/s
-                        </div>
+                        <div class="question-points"><?php echo $question_points; ?> pt/s</div>
                     </div>
                     <?php if (!empty($question['image_path'])): ?>
                         <div class="question-image">
                             <img src="<?php echo htmlspecialchars($question['image_path']); ?>" alt="Question Image" style="max-width:100%; margin-top:10px; border-radius:8px;">
                         </div>
                     <?php endif; ?>
-
                     <input type="text" name="answers[<?php echo $question_id; ?>]" required />
                 </div>
-            
-            <!-- alt-response (T or F) -->
+
+            <!-- alternate-response (T/F) -->
             <?php elseif ($question_type === 'alternate-response'): ?>
                 <div class="alt-response">
                     <div class="question-header">
                         <h3><?php echo ($index + 1) . ". " . htmlspecialchars($question['question_text']); ?> <span style="color: red;">*</span></h3>
-                        <div class="question-points">
-                            <?php echo $question_points; ?> pt/s
-                        </div>
+                        <div class="question-points"><?php echo $question_points; ?> pt/s</div>
                     </div>
-                    <<?php if (!empty($question['image_path'])): ?>
+                    <?php if (!empty($question['image_path'])): ?>
                         <div class="question-image">
                             <img src="<?php echo htmlspecialchars($question['image_path']); ?>" alt="Question Image" style="max-width:100%; margin-top:10px; border-radius:8px;">
                         </div>
                     <?php endif; ?>
-
                     <label>
                         <input type="radio" name="answers[<?php echo $question_id; ?>]" value="True" required /> True
                     </label>
@@ -122,22 +118,19 @@ $questions = getAssessmentQuestions($assessment_id);
                         <input type="radio" name="answers[<?php echo $question_id; ?>]" value="False" required /> False
                     </label>
                 </div>
-            
+
             <!-- multiple-choice -->
             <?php elseif ($question_type === 'mc'): ?>
                 <div class="mc">
                     <div class="question-header">
                         <h3><?php echo ($index + 1) . ". " . htmlspecialchars($question['question_text']); ?> <span style="color: red;">*</span></h3>
-                        <div class="question-points">
-                            <?php echo $question_points; ?> pt/s
-                        </div>
+                        <div class="question-points"><?php echo $question_points; ?> pt/s</div>
                     </div>
                     <?php if (!empty($question['image_path'])): ?>
                         <div class="question-image">
                             <img src="<?php echo htmlspecialchars($question['image_path']); ?>" alt="Question Image" style="max-width:100%; margin-top:10px; border-radius:8px;">
                         </div>
                     <?php endif; ?>
-
                     <?php foreach ($choices as $choice): ?>
                         <label>
                             <input type="radio" name="answers[<?php echo $question_id; ?>]" value="<?php echo htmlspecialchars($choice['id']); ?>" required />
@@ -147,7 +140,6 @@ $questions = getAssessmentQuestions($assessment_id);
                 </div>
             <?php endif; ?>
         <?php endforeach; ?>
-
         <div class="submit">
             <button type="submit">Submit</button>
         </div>

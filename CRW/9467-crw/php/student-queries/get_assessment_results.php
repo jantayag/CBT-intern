@@ -1,5 +1,5 @@
 <?php
-$student_id = $_SESSION['user_id'];
+$student_id = isset($_GET['student_id']) ? intval($_GET['student_id']) : $_SESSION['user_id'];
 if (!isset($student_id)) {
     header("Location: index.php");
     exit();
@@ -74,14 +74,6 @@ function getTotalScore($assessment_id) {
 }
 
 $student_responses = getStudentResponses($student_id, $assessment_id);
-$score = 0;
-foreach ($questions as $q) {
-    $qid = $q['id'];
-    $is_correct = $student_responses[$qid]['is_correct'] ?? 0;
-    if ((int)$is_correct === 1) {
-        $points = getQuestionPoints($qid, $assessment_id);
-        $score += (int)$points;
-    }
-}
+$score = getStudentScore($student_id, $assessment_id);
 $total_score = getTotalScore($assessment_id);
 ?>

@@ -3,6 +3,7 @@ class Question {
     private $id, $text, $difficulty, $points, $type, $answer, $imagePath;
 
     public function __construct($id, $text, $difficulty, $points, $type, $answer, $imagePath = null) {
+        
         $this->id = $id;
         $this->text = $text;
         $this->difficulty = $difficulty;

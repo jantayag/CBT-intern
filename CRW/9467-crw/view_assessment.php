@@ -67,7 +67,10 @@ include('php/student-queries/get_question_points.php');
             <div class="question-header">
                 <h3><?php echo ($index + 1) . ". " . htmlspecialchars($question['question_text']); ?></h3>
                 <div class="question-points">
-                    <?php echo $question_points; ?> pts
+                    <?php 
+                        $earned = $is_correct ? $question_points : 0;
+                        echo "{$earned} / {$question_points} pt" . ($question_points > 1 ? 's' : '');
+                    ?>
                 </div>
             </div>
             <?php if (!empty($question['image_path'])): ?>

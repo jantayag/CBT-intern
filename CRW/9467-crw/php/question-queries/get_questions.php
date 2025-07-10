@@ -119,7 +119,7 @@ function displayQuestionsTable($questions) {
                             <th>Points</th>
                             <th>Type</th>
                             <th>Answer</th>
-                            <th>Image</th> <!-- New column -->
+                            <th>Image</th> 
                             <th>Actions</th>
                         </tr>
                     </thead>
