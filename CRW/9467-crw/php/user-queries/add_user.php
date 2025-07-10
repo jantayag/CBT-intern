@@ -8,7 +8,7 @@ function getNextUserId($conn) {
     return ($row['max_id'] === null) ? 1 : $row['max_id'] + 1;
 }
 
-function addSingleUser ($conn, $userData) {
+function addSingleUser($conn, $userData) {
     $email = filter_var($userData['email'], FILTER_SANITIZE_EMAIL);
     $emailCheckSql = "SELECT id FROM users WHERE email = ?";
     $emailStmt = $conn->prepare($emailCheckSql);
@@ -27,7 +27,7 @@ function addSingleUser ($conn, $userData) {
     $hashedPassword = password_hash($userData['password'], PASSWORD_BCRYPT);
     $firstName = htmlspecialchars(trim($userData['first_name']));
     $lastName = htmlspecialchars(trim($userData['last_name']));
-    $userType = htmlspecialchars(trim($userData['user_type']));
+    $userType = 'student';  // Fixed user type
 
     $sql = "INSERT INTO users (id, password, email, first_name, last_name, user_type) VALUES (?,?,?,?,?,?)";
     $stmt = $conn->prepare($sql);
@@ -44,7 +44,7 @@ function addSingleUser ($conn, $userData) {
         return [
             'success' => true,
             'user_id' => $userId,
-            'message' => "User  $email added successfully"
+            'message' => "User $email added successfully"
         ];
     } else {
         return [
@@ -59,33 +59,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (isset($_FILES['csv-upload']) && $_FILES['csv-upload']['size'] > 0) {
         $file = fopen($_FILES['csv-upload']['tmp_name'], 'r');
-        $headers = fgetcsv($file);
-        
+        $headers = fgetcsv($file); // Skip the header row
+
         while (($line = fgetcsv($file)) !== FALSE) {
             if (count($line) >= 5) {
+                $idNumber = trim($line[1]);    // ID Number
+                $fullName = trim($line[2]);    // Name
+                $email = trim($line[4]);       // EMAIL
+
+                $nameParts = preg_split('/\s+/', $fullName);
+                $firstName = $nameParts[0];
+                $lastName = end($nameParts);
+
                 $userData = [
-                    'password' => $line[0],
-                    'email' => $line[1],
-                    'first_name' => $line[2],
-                    'last_name' => $line[3],
-                    'user_type' => $line[4]
+                    'password' => $idNumber,
+                    'email' => $email,
+                    'first_name' => $firstName,
+                    'last_name' => $lastName,
+                    'user_type' => 'student'
                 ];
-                
-                $result = addSingleUser ($conn, $userData);
+
+                $result = addSingleUser($conn, $userData);
                 $response['results'][] = $result;
-                
+
                 if ($result['success']) {
                     $response['success'] = true;
                 }
             }
         }
         fclose($file);
-        $response['message'] = "Created user accounts successfully";
+        $response['message'] = "User accounts processed from CSV.";
     } else {
-        $result = addSingleUser ($conn, $_POST);
+        $result = addSingleUser($conn, $_POST);
         $response = $result;
     }
-    
+
     echo json_encode($response);
     exit;
 }

@@ -9,6 +9,7 @@ const multer = require('multer');
 const csv = require('csv-parser');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
+const { SourceTextModule } = require('vm');
 const upload = multer({ dest: 'uploads/' });
 const app = express();
 const port = 8888;
@@ -43,8 +44,12 @@ app.post('/login', async (req, res) => {
 
         if (rows.length > 0) {
             const user = rows[0];
-            
+            //Kindly check bcrypt, because somewhat user.password!=password)
+            //comparing excrypted strings :3
+            console.log("Entered password:", password);
+            console.log("Stored hash:", user.password);
             const passwordMatch = await bcrypt.compare(password, user.password);
+            console.log("Password match:", passwordMatch);
 
             if (passwordMatch) {
                 req.session.user = {
@@ -149,6 +154,16 @@ app.post('/api/users/add', async (req, res) => {
 
     try {
         const { first_name, last_name, email, password, user_type } = req.body;
+
+        // Validate incoming fields
+        if (!first_name || !last_name || !email || !password || !user_type) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required fields (first_name, last_name, email, password, user_type)'
+            });
+        }
+
+        // Check if the email already exists
         const [emailCheck] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
         
         if (emailCheck.length > 0) {
@@ -158,19 +173,27 @@ app.post('/api/users/add', async (req, res) => {
             });
         }
 
-        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+        // Validate password length (example: minimum 8 characters)
+        if (password.length < 8) {
+            return res.status(400).json({
+                success: false,
+                message: 'Password must be at least 8 characters long'
+            });
+        }
+        // Instead of hashing the password, store it as plaintext
+        //on second thought, we try hashing it
+        const plaintextPassword = await bcrypt.hash(password, SALT_ROUNDS);
+        //const plaintextPassword = password;
 
-        const [maxIdResult] = await pool.query('SELECT MAX(id) as max_id FROM users');
-        const userId = (maxIdResult[0].max_id || 0) + 1;
-        
+        // Insert the new user into the database
         const [result] = await pool.query(
-            'INSERT INTO users (id, password, email, first_name, last_name, user_type) VALUES (?, ?, ?, ?, ?, ?)',
-            [userId, hashedPassword, email, first_name, last_name, user_type]
+            'INSERT INTO users (email, first_name, last_name, password, user_type) VALUES (?, ?, ?, ?, ?)',
+            [email, first_name, last_name, plaintextPassword, user_type]
         );
 
+        // Send success response
         res.json({
             success: true,
-            user_id: userId,
             message: `User ${email} added successfully`
         });
     } catch (error) {
@@ -179,6 +202,55 @@ app.post('/api/users/add', async (req, res) => {
             success: false,
             message: 'Error creating user: ' + error.message
         });
+    }
+});
+app.post('/api/users/bulk_add', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ success: false, message: 'Not authenticated' });
+    }
+
+    const users = req.body.users;
+
+    if (!Array.isArray(users)) {
+        return res.status(400).json({ success: false, message: 'Invalid data format' });
+    }
+
+    try {
+        const inserted = [];
+        const skipped = [];
+
+        for (const user of users) {
+            const { email, password, first_name, last_name, user_type } = user;
+
+            if (!email || !password || !first_name || !last_name || !user_type) {
+                skipped.push({ email, reason: 'Missing fields' });
+                continue;
+            }
+
+            const [emailCheck] = await pool.query('SELECT id FROM users WHERE email = ?', [email]);
+            if (emailCheck.length > 0) {
+                skipped.push({ email, reason: 'Email already exists' });
+                continue;
+            }
+
+            const hashed = await bcrypt.hash(password, SALT_ROUNDS);
+            await pool.query(
+                'INSERT INTO users (email, first_name, last_name, password, user_type) VALUES (?, ?, ?, ?, ?)',
+                [email, first_name, last_name, hashed, user_type]
+            );
+
+            inserted.push(email);
+        }
+
+        res.json({
+            success: true,
+            message: `Upload completed. Inserted: ${inserted.length}, Skipped: ${skipped.length}`,
+            inserted,
+            skipped
+        });
+    } catch (err) {
+        console.error('Bulk insert error:', err);
+        res.status(500).json({ success: false, message: 'Server error during bulk upload' });
     }
 });
 
@@ -190,10 +262,24 @@ app.post('/api/users/edit', async (req, res) => {
     try {
         const { user_id, first_name, last_name, email, password, user_type } = req.body;
         
+        if (!user_id || !email || !first_name || !last_name || !user_type) {
+            return res.status(400).json({
+                success: false,
+                message: 'Missing required fields (user_id, first_name, last_name, email, user_type)'
+            });
+        }
+
         let queryParams;
         let updateQuery;
 
         if (password) {
+            // Check if the password is valid (for example, check minimum length)
+            if (password.length < 8) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Password must be at least 8 characters long'
+                });
+            }
             const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
             updateQuery = 'UPDATE users SET password = ?, email = ?, first_name = ?, last_name = ?, user_type = ? WHERE id = ?';
             queryParams = [hashedPassword, email, first_name, last_name, user_type, user_id];
