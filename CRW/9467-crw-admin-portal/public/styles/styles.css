@@ -119,7 +119,7 @@ li {
 }
 
 .view-btn, .del-btn, .edit-btn, .save-btn, .publish-btn, .unpublish-btn, .view2-btn, .ans-btn  {
-    background-color: #4CAF50;
+    background-color: #4c60af;
     color: white;
     padding: 10px 20px;
     margin: 5px;
@@ -129,7 +129,7 @@ li {
 }
 
 .view-btn:hover, .del-btn:hover, .view2-btn:hover {
-    background-color: #45a049;
+    background-color: #576fd0;
 }
 
 .del-btn {
@@ -141,11 +141,11 @@ li {
 }
 
 .edit-btn {
-    background: #ffc107;
+    background: #4c60af;
     color: #000;
 }
 .edit-btn:hover {
-    background: #e0a800;
+    background: #576fd0;
 }
 
 .save-btn {

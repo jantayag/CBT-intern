@@ -74,6 +74,14 @@ function getTotalScore($assessment_id) {
 }
 
 $student_responses = getStudentResponses($student_id, $assessment_id);
-$score = getStudentScore($student_id, $assessment_id);
+$score = 0;
+foreach ($questions as $q) {
+    $qid = $q['id'];
+    $is_correct = $student_responses[$qid]['is_correct'] ?? 0;
+    if ((int)$is_correct === 1) {
+        $points = getQuestionPoints($qid, $assessment_id);
+        $score += (int)$points;
+    }
+}
 $total_score = getTotalScore($assessment_id);
 ?>

@@ -124,32 +124,35 @@ function displayAssessmentQuestions($questions, $assessment) {
                 <table id="questionsTable">
                     <thead>
                         <tr>
-                            <th>#</th>
+                           <th>ID</th>
                             <th>Question</th>
                             <th>Difficulty</th>
                             <th>Points</th>
                             <th>Type</th>
                             <th>Answer</th>
+                            <th>Image</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="questions-tbody">
-                    <?php
-                    $count = 1;
-                     foreach ($questions as $question): ?>
-                        <tr data-assessment-id="<?php echo $assessment['id']; ?>" 
-                            data-question-id="<?php echo $question['id']; ?>">
-                            <td><?php echo htmlspecialchars($count++); ?></td>
-                            <td><?php echo htmlspecialchars($question['question_text']); ?></td>
-                            <td><?php echo htmlspecialchars($question['difficulty']); ?></td>
-                            <td><?php echo htmlspecialchars($question['points']); ?></td>
-                            <td><?php echo htmlspecialchars($question['type']); ?></td>
-                            <td><?php echo htmlspecialchars(getCorrectAnswer($question['id'])); ?></td>
-                            <td class="action-buttons">
-                                <button class="del-btn" onclick="removeQuestionFromAssessment(<?php echo $assessment['id']; ?>, <?php echo $question['id']; ?>)">
-                                    Remove
-                                </button>
-                            </td>
+                        <?php foreach ($questions as $question): ?>
+                            <tr data-question-id="<?php echo $question['id']; ?>">
+                                <td><?php echo htmlspecialchars($question['id']); ?></td>
+                                <td><?php echo htmlspecialchars($question['question_text']); ?></td>
+                                <td><?php echo htmlspecialchars($question['difficulty']); ?></td>
+                                <td><?php echo htmlspecialchars($question['points']); ?></td>
+                                <td><?php echo htmlspecialchars($question['type']); ?></td>
+                                <td><?php echo htmlspecialchars(getCorrectAnswer($question['id'])); ?></td>
+                                <td>
+                                    <?php
+                                        $imagePath = isset($question['image']) ? $question['image'] : '';
+                                        echo $imagePath ? 'Yes' : 'None';
+                                    ?>
+                                </td>
+                                <td class="action-buttons">
+                                    <button class="edit-btn" onclick="editQuestion(<?php echo $question['id']; ?>)">Edit</button>
+                                    <button class="del-btn" onclick="deleteQuestion(<?php echo $question['id']; ?>)">Delete</button>
+                                </td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>

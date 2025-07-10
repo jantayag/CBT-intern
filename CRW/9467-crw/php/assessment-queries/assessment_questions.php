@@ -4,8 +4,10 @@ include('php/objects/question.php');
 
 function getQuestions($assessment_id) {
     global $conn;
-    $sql = "SELECT * FROM `questions` WHERE 
-            `id` NOT IN (SELECT `question_id` FROM `assessment_questions` WHERE `assessment_id` = ?)";
+    $sql = "SELECT * FROM `questions` 
+            WHERE `id` NOT IN (
+                SELECT `question_id` FROM `assessment_questions` WHERE `assessment_id` = ?
+            )";
     
     $params = [$assessment_id];
     $types = "i"; 
@@ -20,19 +22,25 @@ function getQuestions($assessment_id) {
     $questions = [];
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
+            
+            $imagePath = isset($row['image_path']) ? $row['image_path'] : '';
+            $correctAnswer = isset($row['correct_answer']) ? $row['correct_answer'] : '';
+
+           
             $questions[] = new Question(
                 $row['id'],
                 $row['question_text'],
                 $row['difficulty'],
                 $row['points'],
-                $row['type']
+                $row['type'],
+                $imagePath,
+                $correctAnswer
             );
         }
     }
-    
+
     return $questions;
 }
-
 function displayQuestionSelectionTable($questions) {
     ?>   
     <div class="modal" id="questionSelectionModal">
