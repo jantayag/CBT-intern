@@ -67,8 +67,7 @@ $stmt->close();
         <main id="main">
             <div class="heading2">
                 <h1>Statistics for: <?php echo htmlspecialchars($assessmentTitle); ?></h1>
-                <img id="return-btn" src="img/return-button.svg" alt="return to classes page" onclick="window.location.href=history.back()">
-                        
+                <img id="return-btn" src="img/return-button.svg" alt="return to classes page" onclick="history.back()">    
             </div>
             
                 

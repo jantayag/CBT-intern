@@ -4,15 +4,14 @@
 	left: 0;
 	width: 280px;
 	height: 100%;
-	background: #ffffff; /* fallback for --light */
+	background: #ffffff;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
 	align-items: center;
-	padding: 20px 0;
-	box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+	padding-top: 40px;
+	box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+	overflow-y: auto; 
 }
-
 #sidebar .brand img {
 	height: 80px;
 	width: auto;
@@ -24,16 +23,18 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	flex-grow: 1;
 }
-
 #sidebar .side-menu {
 	width: 100%;
-	padding: 0;
+	padding: 0 0 20px;
 	margin: 0;
 	list-style: none;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	justify-content: flex-start; /* Align menu items to top */
+	flex-grow: 1;
 }
 
 #sidebar .side-menu li {

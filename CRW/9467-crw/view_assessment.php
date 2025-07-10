@@ -19,7 +19,7 @@ include('php/student-queries/get_question_points.php');
             <?php echo $score; ?> / <?php echo $total_score; ?>
             (<?php echo round(($score / $total_score) * 100, 1); ?>%)
             </h3>
-            <img id="return-btn" src="img/return-button.svg" alt="return to topic_assessments page" onclick="history.back()">'">
+            <img id="return-btn" src="img/return-button.svg" alt="return to topic_assessments page" onclick="history.back()">
 
         </div>
         

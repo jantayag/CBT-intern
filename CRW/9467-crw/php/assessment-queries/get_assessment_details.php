@@ -14,7 +14,7 @@ function getAssessmentDetails($assessment_id) {
 function getAssessmentQuestions($assessment_id) {
     global $conn;
 
-    $sql = "SELECT q.id, q.question_text, q.difficulty, q.points, q.type
+    $sql = "SELECT q.id, q.question_text, q.difficulty, q.points, q.type, q.image_path
             FROM assessment_questions aq
             INNER JOIN questions q ON aq.question_id = q.id
             WHERE aq.assessment_id = ?";
@@ -145,7 +145,7 @@ function displayAssessmentQuestions($questions, $assessment) {
                                 <td><?php echo htmlspecialchars(getCorrectAnswer($question['id'])); ?></td>
                                 <td>
                                     <?php
-                                        $imagePath = isset($question['image']) ? $question['image'] : '';
+                                       $imagePath = isset($question['image_path']) ? $question['image_path'] : '';
                                         echo $imagePath ? 'Yes' : 'None';
                                     ?>
                                 </td>
