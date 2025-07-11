@@ -13,7 +13,7 @@ if (isset($_SESSION['last_activity'])) {
     if ($elapsedTime > $timeoutDuration) {
         session_unset();
         session_destroy();
-        header("Location: ../9467-crw/index.php");
+        header("Location: ../myreach/index.php");
         exit();
     }
 }
