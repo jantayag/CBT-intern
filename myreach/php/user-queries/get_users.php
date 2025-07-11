@@ -1,13 +1,6 @@
 <?php
 include('php/db.php');
 
-function logAction($conn, $userId, $action, $details = '') {
-    $sql = "INSERT INTO logs (user_id, action, details) VALUES (?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param('iss', $userId, $action, $details);
-    $stmt->execute();
-}
-
 function getUsers() {
     global $conn;
     $loggedInUser = $_SESSION['user_id'];
