@@ -23,8 +23,13 @@ function getQuestions() {
         $filterValue = $_GET['filter'];
 
         if (in_array($filterValue, ['identification', 'multiple-choice', 'alternate-response'])) {
+            $typeMap = [
+                'multiple-choice' => 'mc',
+                'alternate-response' => 'alternate-response',
+                'identification' => 'identification'
+            ];
             $sql .= " AND type = ?";
-            $params[] = $filterValue;
+            $params[] = $typeMap[$filterValue];
             $types .= "s";
         } elseif (in_array($filterValue, ['easy', 'intermediate', 'advanced'])) {
             $sql .= " AND LOWER(difficulty) = ?";

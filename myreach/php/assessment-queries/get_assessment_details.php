@@ -31,10 +31,18 @@ function getAssessmentQuestions($assessment_id) {
     if (isset($_GET['filter']) && $_GET['filter'] !== 'default') {
         switch ($_GET['filter']) {
             case 'identification':
+                $sql .= " AND q.type = ?";
+                $params[] = 'identification';
+                $types .= "s";
+                break;
             case 'multiple-choice':
+                $sql .= " AND q.type = ?";
+                $params[] = 'mc'; // This is the correct value in the database
+                $types .= "s";
+                break;
             case 'alternate-response':
                 $sql .= " AND q.type = ?";
-                $params[] = $_GET['filter'];
+                $params[] = 'alternate-response';
                 $types .= "s";
                 break;
             case 'easy':
