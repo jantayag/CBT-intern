@@ -1,7 +1,20 @@
 <?php
-session_start(); 
-$_SESSION = array();
+session_start();
+require_once 'db.php';
 
+function logAction($conn, $userId, $action, $details = '') {
+    $stmt = $conn->prepare("INSERT INTO logs (user_id, action, details) VALUES (?, ?, ?)");
+    $stmt->bind_param('iss', $userId, $action, $details);
+    $stmt->execute();
+}
+
+// Log only if student is logging out
+if (isset($_SESSION['user_id']) && strtolower($_SESSION['user_type']) === 'student') {
+    logAction($conn, $_SESSION['user_id'], 'Logout', 'Student logged out');
+}
+
+// Clear session
+$_SESSION = array();
 
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();

@@ -4,6 +4,12 @@ session_regenerate_id(true);
 
 require_once 'db.php';
 
+function logAction($conn, $userId, $action, $details = '') {
+    $stmt = $conn->prepare("INSERT INTO logs (user_id, action, details) VALUES (?, ?, ?)");
+    $stmt->bind_param('iss', $userId, $action, $details);
+    $stmt->execute();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'];
@@ -27,6 +33,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['user_type'] = $user['user_type'];
                     $_SESSION['last_activity'] = time();
 
+                     if (strtolower($user['user_type']) === 'student') {
+                            logAction($conn, $user['id'], 'Login', 'Student logged in');
+                        }
+
                     header("Location: ../classes.php");
                     exit();
                 } else {
@@ -42,12 +52,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $updateStmt->bind_param("si", $hashedPassword, $user['id']);
                     $updateStmt->execute();
 
-                    $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['email'] = $user['email'];
-                    $_SESSION['first_name'] = $user['first_name'];
-                    $_SESSION['last_name'] = $user['last_name'];
-                    $_SESSION['user_type'] = $user['user_type'];
-                    $_SESSION['last_activity'] = time();
+                        $_SESSION['user_id'] = $user['id'];
+                        $_SESSION['email'] = $user['email'];
+                        $_SESSION['first_name'] = $user['first_name'];
+                        $_SESSION['last_name'] = $user['last_name'];
+                        $_SESSION['user_type'] = $user['user_type'];
+                        $_SESSION['last_activity'] = time();
 
                     header("Location: ../classes.php");
                     exit();

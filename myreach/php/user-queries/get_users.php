@@ -63,8 +63,7 @@ function getUsers() {
             $users = array_reverse($users);
         }
     }
-    
-    logAction($conn, $loggedInUser, 'View User List', 'User viewed the user management page');
+
 
     return $users;
 }
