@@ -49,5 +49,6 @@ if (!$assessment) {
     <script src="scripts/assessment_questions.js"></script>
     <script src="scripts/questions_pagination.js"></script>
     <script src="scripts/pagination.js"></script>
+    <script src="scripts/question_form.js"></script>
 </body>
 </html>
