@@ -206,6 +206,39 @@ function deleteQuestion(questionId) {
     });
 }
 
+function removeQuestionFromAssessment(questionId, assessmentId) {
+    if (!confirm('Remove this question from this assessment only?')) return;
+
+    fetch('php/assessment-queries/remove_q_from_assessment.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `assessment_id=${assessmentId}&question_id=${questionId}`
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const row = document.querySelector(`tr[data-question-id="${questionId}"]`);
+            if (row) row.remove();
+
+            alert(data.message);
+
+            const tbody = document.querySelector('#questionsTable tbody');
+            if (tbody && tbody.children.length === 0) {
+                const container = document.querySelector('.table-responsive');
+                container.innerHTML = '<div class="no-questions">No questions found.</div>';
+            }
+        } else {
+            alert('Failed to remove question: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Something went wrong while removing the question.');
+    });
+}
+
 // edit question script
 function editQuestion(questionId) {
     fetch(`php/question-queries/get_question_details.php?question_id=${questionId}`)

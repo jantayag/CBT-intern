@@ -159,7 +159,8 @@ function displayAssessmentQuestions($questions, $assessment) {
                                 </td>
                                 <td class="action-buttons">
                                     <button class="edit-btn" onclick="editQuestion(<?php echo $question['id']; ?>)">Edit</button>
-                                    <button class="del-btn" onclick="deleteQuestion(<?php echo $question['id']; ?>)">Delete</button>
+                                    <button class="del-btn" onclick="removeQuestionFromAssessment(<?php echo $question['id']; ?>, <?php echo $assessment['id']; ?>)">Remove</button>
+
                                 </td>
                         </tr>
                     <?php endforeach; ?>
