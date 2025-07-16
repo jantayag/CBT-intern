@@ -9,7 +9,7 @@ function logAction($conn, $userId, $action, $details = '') {
     $stmt->execute();
 }
 
-$timeoutDuration = 300;
+$timeoutDuration = 1800;
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: /CBT/myreach/index.php");
