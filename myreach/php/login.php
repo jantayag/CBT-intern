@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     try {
-        $stmt = $conn->prepare("SELECT id, password, email, first_name, last_name, user_type 
+        $stmt = $conn->prepare("SELECT id, password, email, first_name, last_name, user_type, is_logged_in 
                                FROM users 
                                WHERE email = ?");
         $stmt->bind_param("s", $email);
@@ -24,8 +24,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
+
+            // ✅ Prevent login if already logged in
+            if ((int)$user['is_logged_in'] === 1) {
+                echo "<script>
+                        alert('User is already logged in on another device.');
+                        window.location.href='../index.php';
+                      </script>";
+                exit();
+            }
+
             if (strlen($user['password']) === 60) {
                 if (password_verify($password, $user['password'])) {
+
+                    $loginUpdate = $conn->prepare("UPDATE users SET is_logged_in = 1 WHERE id = ?");
+                    $loginUpdate->bind_param("i", $user['id']);
+                    $loginUpdate->execute();
+
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['email'] = $user['email'];
                     $_SESSION['first_name'] = $user['first_name'];
@@ -33,9 +48,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['user_type'] = $user['user_type'];
                     $_SESSION['last_activity'] = time();
 
-                     if (strtolower($user['user_type']) === 'student') {
-                            logAction($conn, $user['id'], 'Login', 'Student logged in');
-                        }
+                    if (strtolower($user['user_type']) === 'student') {
+                        logAction($conn, $user['id'], 'Login', 'Student logged in');
+                    }
 
                     header("Location: ../classes.php");
                     exit();
@@ -48,16 +63,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } else {
                 if ($password === $user['password']) {
                     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-                    $updateStmt = $conn->prepare("UPDATE users SET password = ? WHERE id = ?");
+                    $updateStmt = $conn->prepare("UPDATE users SET password = ?, is_logged_in = 1 WHERE id = ?");
                     $updateStmt->bind_param("si", $hashedPassword, $user['id']);
                     $updateStmt->execute();
 
-                        $_SESSION['user_id'] = $user['id'];
-                        $_SESSION['email'] = $user['email'];
-                        $_SESSION['first_name'] = $user['first_name'];
-                        $_SESSION['last_name'] = $user['last_name'];
-                        $_SESSION['user_type'] = $user['user_type'];
-                        $_SESSION['last_activity'] = time();
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['email'] = $user['email'];
+                    $_SESSION['first_name'] = $user['first_name'];
+                    $_SESSION['last_name'] = $user['last_name'];
+                    $_SESSION['user_type'] = $user['user_type'];
+                    $_SESSION['last_activity'] = time();
 
                     header("Location: ../classes.php");
                     exit();

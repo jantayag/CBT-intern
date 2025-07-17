@@ -8,12 +8,19 @@ function logAction($conn, $userId, $action, $details = '') {
     $stmt->execute();
 }
 
-// Log only if student is logging out
-if (isset($_SESSION['user_id']) && strtolower($_SESSION['user_type']) === 'student') {
-    logAction($conn, $_SESSION['user_id'], 'Logout', 'Student logged out');
+if (isset($_SESSION['user_id'])) {
+    $userId = $_SESSION['user_id'];
+
+    $updateStmt = $conn->prepare("UPDATE users SET is_logged_in = 0 WHERE id = ?");
+    $updateStmt->bind_param("i", $userId);
+    $updateStmt->execute();
+
+    if (strtolower($_SESSION['user_type']) === 'student') {
+        logAction($conn, $userId, 'Logout', 'Student logged out');
+    }
 }
 
-// Clear session
+
 $_SESSION = array();
 
 if (ini_get("session.use_cookies")) {
