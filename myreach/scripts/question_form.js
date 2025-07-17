@@ -44,22 +44,6 @@ window.onclick = function(event) {
     }
 }
 
-document.getElementById('type').addEventListener('change', function() {
-    hideAllAnswerContainers();
-    const selectedType = this.value;
-    
-    switch(selectedType) {
-        case 'alternate-response':
-            document.getElementById('alternate-response').style.display = 'block';
-            break;
-        case 'mc':
-            document.getElementById('mc').style.display = 'block';
-            break;
-        case 'identification':
-            document.getElementById('identification').style.display = 'block';
-            break;
-    }
-});
 
 document.getElementById('questionForm').addEventListener('submit', function(e) {
     e.preventDefault();
@@ -207,7 +191,7 @@ function deleteQuestion(questionId) {
 }
 
 function removeQuestionFromAssessment(questionId, assessmentId) {
-    if (!confirm('Remove this question from this assessment only?')) return;
+    if (!confirm('Remove this question from this assessment?')) return;
 
     fetch('php/assessment-queries/remove_q_from_assessment.php', {
         method: 'POST',
