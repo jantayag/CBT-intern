@@ -150,6 +150,25 @@ function viewAnswers(questionId) {
         });
 }
 
+ document.addEventListener('DOMContentLoaded', () => {
+        const typeSelect = document.getElementById('type');
+        const containers = {
+            'alternate-response': document.getElementById('alternate-response'),
+            'mc': document.getElementById('mc'),
+            'identification': document.getElementById('identification')
+        };
+
+        function showContainer(type) {
+            Object.values(containers).forEach(c => c.style.display = 'none');
+            if (containers[type]) containers[type].style.display = 'block';
+        }
+
+        if (typeSelect) {
+            showContainer(typeSelect.value); // for prefilled data
+            typeSelect.addEventListener('change', () => showContainer(typeSelect.value));
+        }
+    });
+
 function closeAnswersModal() {
     document.querySelector('.modal-answers').parentElement.style.display = 'none';
 }
