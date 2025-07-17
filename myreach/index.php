@@ -23,7 +23,7 @@
 <body class="loginBody">
     <div class="credentials">
         <div class="logo">
-            <img src="img/myreach.png" alt="logo" width="350" height="250">
+            <img src="img/myreach.png" alt="logo" width="350" height="200">
         </div>
         <form id="loginForm" action="php/login.php" method="post"  autocomplete="off">
             <label for="email">Email:</label>
